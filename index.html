@@ -233,7 +233,7 @@
           <div class="hidden sm:flex items-center gap-3 rounded-full border border-white/15 bg-ink/85 backdrop-blur-md px-3.5 py-1.5">
             <span id="hudPhaseTag" class="font-mono text-[10.5px] uppercase tracking-[0.16em] text-amber-400">FASE 01 / 03</span>
             <div class="w-24 h-1.5 rounded-full bg-white/15 overflow-hidden">
-              <div id="hudScrollBar" class="h-full bg-amber-400 w-[33%] rounded-full transition-colors"></div>
+              <div id="hudScrollBar" class="h-full bg-amber-400 rounded-full transition-colors" style="width: 0%;"></div>
             </div>
           </div>
         </div>
@@ -331,7 +331,7 @@
                     <span id="hudM2Val" class="font-bold text-amber-400">Alto</span>
                   </div>
                   <div class="mt-1 h-2 w-full rounded-full bg-white/10 overflow-hidden">
-                    <div id="hudM2Bar" class="h-full rounded-full bg-amber-500 transition-all duration-150" style="width: 85%;"></div>
+                    <div id="hudM2Bar" class="h-full rounded-full bg-amber-500 transition-all duration-150" style="width: 15%;"></div>
                   </div>
                 </div>
 
@@ -782,9 +782,27 @@
     }
 
     function updateHud(p) {
+      // Progressione lineare e continua delle barre su tutto lo scroll p (0 -> 1)
+      var scrollPct = Math.round(p * 100);
+      var m1Pct = Math.round(22 + p * 78);
+      var m2Pct = Math.round(15 + p * 85);
+      var m3Pct = Math.round(15 + p * 85);
+
+      if (hudScrollBar) {
+        hudScrollBar.style.width = scrollPct + '%';
+      }
+      if (hudM1Bar) {
+        hudM1Bar.style.width = m1Pct + '%';
+      }
+      if (hudM2Bar) {
+        hudM2Bar.style.width = m2Pct + '%';
+      }
+      if (hudM3Bar) {
+        hudM3Bar.style.width = m3Pct + '%';
+      }
+
       if (p < 0.33) {
         // FASE 01: STRESSATO / STANCO / BLOCCATO
-        var sub1 = clamp(p / 0.33, 0, 1);
         setActiveStepButtons(0);
         if (hudPhaseTag) {
           hudPhaseTag.textContent = 'FASE 01 / 03';
@@ -792,7 +810,6 @@
         }
         if (hudScrollBar) {
           hudScrollBar.className = 'h-full bg-amber-400 rounded-full';
-          hudScrollBar.style.width = Math.round(15 + sub1 * 18) + '%';
         }
         if (hudCard) {
           hudCard.classList.remove('border-wa/45');
@@ -803,20 +820,19 @@
           hudStatusPill.className = 'font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/20 text-amber-300 border border-red-500/30';
         }
         if (hudM1Label) hudM1Label.textContent = 'Energia';
-        if (hudM1Val) { hudM1Val.textContent = Math.round(22 + sub1 * 8) + '%'; hudM1Val.className = 'font-bold text-red-400'; }
-        if (hudM1Bar) { hudM1Bar.style.width = Math.round(22 + sub1 * 8) + '%'; hudM1Bar.className = 'h-full rounded-full bg-gradient-to-r from-red-500 to-amber-400'; }
+        if (hudM1Val) { hudM1Val.textContent = m1Pct + '%'; hudM1Val.className = 'font-bold text-red-400'; }
+        if (hudM1Bar) { hudM1Bar.className = 'h-full rounded-full bg-gradient-to-r from-red-500 to-amber-400'; }
 
         if (hudM2Label) hudM2Label.textContent = 'Dolore lombare';
         if (hudM2Val) { hudM2Val.textContent = 'Alto'; hudM2Val.className = 'font-bold text-amber-400'; }
-        if (hudM2Bar) { hudM2Bar.style.width = '85%'; hudM2Bar.className = 'h-full rounded-full bg-amber-500'; }
+        if (hudM2Bar) { hudM2Bar.className = 'h-full rounded-full bg-amber-500'; }
 
         if (hudM3Label) hudM3Label.textContent = 'Massa attiva';
         if (hudM3Val) { hudM3Val.textContent = '-'; hudM3Val.className = 'font-bold text-zinc-400'; }
-        if (hudM3Bar) { hudM3Bar.style.width = '15%'; hudM3Bar.className = 'h-full rounded-full bg-zinc-500'; }
+        if (hudM3Bar) { hudM3Bar.className = 'h-full rounded-full bg-zinc-500'; }
 
       } else if (p < 0.68) {
         // FASE 02: IL METODO 1-TO-1
-        var sub2 = clamp((p - 0.33) / 0.35, 0, 1);
         setActiveStepButtons(1);
         if (hudPhaseTag) {
           hudPhaseTag.textContent = 'FASE 02 / 03';
@@ -824,7 +840,6 @@
         }
         if (hudScrollBar) {
           hudScrollBar.className = 'h-full bg-wa rounded-full';
-          hudScrollBar.style.width = Math.round(33 + sub2 * 35) + '%';
         }
         if (hudCard) {
           hudCard.classList.remove('border-white/15');
@@ -835,20 +850,19 @@
           hudStatusPill.className = 'font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-wa/20 text-wa border border-wa/40';
         }
         if (hudM1Label) hudM1Label.textContent = 'Tecnica 1-to-1';
-        if (hudM1Val) { hudM1Val.textContent = Math.round(75 + sub2 * 25) + '%'; hudM1Val.className = 'font-bold text-wa'; }
-        if (hudM1Bar) { hudM1Bar.style.width = Math.round(75 + sub2 * 25) + '%'; hudM1Bar.className = 'h-full rounded-full bg-wa'; }
+        if (hudM1Val) { hudM1Val.textContent = m1Pct + '%'; hudM1Val.className = 'font-bold text-wa'; }
+        if (hudM1Bar) { hudM1Bar.className = 'h-full rounded-full bg-wa'; }
 
         if (hudM2Label) hudM2Label.textContent = 'Postura';
         if (hudM2Val) { hudM2Val.textContent = 'Riallineata'; hudM2Val.className = 'font-bold text-wa'; }
-        if (hudM2Bar) { hudM2Bar.style.width = Math.round(65 + sub2 * 35) + '%'; hudM2Bar.className = 'h-full rounded-full bg-wa'; }
+        if (hudM2Bar) { hudM2Bar.className = 'h-full rounded-full bg-wa'; }
 
         if (hudM3Label) hudM3Label.textContent = 'Carico';
         if (hudM3Val) { hudM3Val.textContent = 'Progressivo'; hudM3Val.className = 'font-bold text-emerald-300'; }
-        if (hudM3Bar) { hudM3Bar.style.width = Math.round(50 + sub2 * 40) + '%'; hudM3Bar.className = 'h-full rounded-full bg-emerald-400'; }
+        if (hudM3Bar) { hudM3Bar.className = 'h-full rounded-full bg-emerald-400'; }
 
       } else {
         // FASE 03: DOPO — RINATO. POTENTE. DEFINITO.
-        var sub3 = clamp((p - 0.68) / 0.32, 0, 1);
         setActiveStepButtons(2);
         if (hudPhaseTag) {
           hudPhaseTag.textContent = 'FASE 03 / 03';
@@ -856,7 +870,6 @@
         }
         if (hudScrollBar) {
           hudScrollBar.className = 'h-full bg-wa rounded-full';
-          hudScrollBar.style.width = Math.round(68 + sub3 * 32) + '%';
         }
         if (hudCard) {
           hudCard.classList.remove('border-white/15');
@@ -867,16 +880,16 @@
           hudStatusPill.className = 'font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-wa text-ink font-extrabold';
         }
         if (hudM1Label) hudM1Label.textContent = 'Energia';
-        if (hudM1Val) { hudM1Val.textContent = Math.round(88 + sub3 * 12) + '%'; hudM1Val.className = 'font-bold text-wa'; }
-        if (hudM1Bar) { hudM1Bar.style.width = Math.round(88 + sub3 * 12) + '%'; hudM1Bar.className = 'h-full rounded-full bg-wa'; }
+        if (hudM1Val) { hudM1Val.textContent = m1Pct + '%'; hudM1Val.className = 'font-bold text-wa'; }
+        if (hudM1Bar) { hudM1Bar.className = 'h-full rounded-full bg-wa'; }
 
         if (hudM2Label) hudM2Label.textContent = 'Dolori articolari';
         if (hudM2Val) { hudM2Val.textContent = '0'; hudM2Val.className = 'font-bold text-wa'; }
-        if (hudM2Bar) { hudM2Bar.style.width = '100%'; hudM2Bar.className = 'h-full rounded-full bg-wa'; }
+        if (hudM2Bar) { hudM2Bar.className = 'h-full rounded-full bg-wa'; }
 
         if (hudM3Label) hudM3Label.textContent = 'Ricomposizione';
         if (hudM3Val) { hudM3Val.textContent = 'Attiva'; hudM3Val.className = 'font-bold text-wa'; }
-        if (hudM3Bar) { hudM3Bar.style.width = '100%'; hudM3Bar.className = 'h-full rounded-full bg-wa'; }
+        if (hudM3Bar) { hudM3Bar.className = 'h-full rounded-full bg-wa'; }
       }
     }
 
